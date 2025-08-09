@@ -54,6 +54,28 @@ return {
                 }
             }
         end,
+        inline_output = function(self, data, context)
+            local ok, body = pcall(vim.json.decode, data.body)
+            if not ok then
+                return {
+                    status = "error",
+                    output = "Could not parse JSON response",
+                }
+            end
+            if data and data.status >= 400 then
+                return {
+                    status = "error",
+                    output = body.error,
+                }
+            end
+            return {
+                status = "success",
+                output = {
+                    role = "assistant",
+                    content = body,
+                }
+            }
+        end,
     },
     schema = {
         model = {
