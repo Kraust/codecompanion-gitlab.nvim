@@ -26,17 +26,21 @@ return {
         form_messages = function(self, messages)
             -- messages must be shorter than 1000 characters.
             -- This issues with the default system_prompt.
-            local additional_context = {}
-            for _, message in ipairs(messages) do
-                table.insert(additional_context, {
-                    category = "file",
-                    id = message.role,
-                    content = message.content,
-                })
-            end
+            messages = vim
+                .iter(messages)
+                :map(function(message)
+                    return {
+                        category = "file",
+                        id = message.role,
+                        content = message.content,
+                    }
+                end)
+                :totable()
+
+
             return {
                 content = "Ignore this context and only respond to additional context",
-                additional_context = additional_context,
+                additional_context = messages,
             }
         end,
         chat_output = function(self, data, tools)
