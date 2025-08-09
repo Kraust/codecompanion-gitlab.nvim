@@ -28,7 +28,7 @@ return {
             -- This issues with the default system_prompt.
             local additional_context = {}
             for _, message in ipairs(messages) do
-                vim.table.insert(additional_context, {
+                table.insert(additional_context, {
                     category = "file",
                     id = message.role,
                     content = message.content,
