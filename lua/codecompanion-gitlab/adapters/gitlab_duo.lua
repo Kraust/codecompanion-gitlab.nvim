@@ -17,8 +17,6 @@ return {
         api_key = "GITLAB_API_KEY",
         url = "GITLAB_URL",
         chat_url = "/api/v4/chat/completions",
-        -- Gitlab Duo currently has a maximum context length of 1000
-        maximum_context_length = 1000,
     },
     headers = {
         ["Content-Type"] = "application/json",
@@ -33,7 +31,8 @@ return {
                 merged_content = merged_content .. message.content
             end
             vim.print(merged_content)
-            local merged_content_truncated = string.sub(merged_content, 1, self.maximum_context_length)
+            -- Gitlab Duo currently has a maximum context length of 1000
+            local merged_content_truncated = string.sub(merged_content, 1, 1000)
             vim.print(merged_content_truncated)
             return { content = merged_content_truncated }
         end,
