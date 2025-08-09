@@ -26,15 +26,18 @@ return {
         form_messages = function(self, messages)
             -- messages must be shorter than 1000 characters.
             -- This issues with the default system_prompt.
-            local merged_content = "";
+            local additional_context = {}
             for _, message in ipairs(messages) do
-                merged_content = merged_content .. "\n" .. message.content
+                vim.table.insert(additional_context, {
+                    category = "file",
+                    id = message.role,
+                    content = message.content,
+                })
             end
-            vim.print(merged_content)
-            -- Gitlab Duo currently has a maximum context length of 1000
-            local merged_content_truncated = string.sub(merged_content, -1000)
-            vim.print(merged_content_truncated)
-            return { content = merged_content_truncated }
+            return {
+                content = "Ignore this context and only respond to additional context",
+                additional_context = additional_context,
+            }
         end,
         chat_output = function(self, data, tools)
             local ok, body = pcall(vim.json.decode, data.body)
