@@ -37,7 +37,6 @@ return {
                 end)
                 :totable()
 
-            vim.print(messages)
             return {
                 content = "Ignore this context and only respond to additional context",
                 additional_context = messages,
@@ -79,7 +78,6 @@ return {
                     output = body.error,
                 }
             end
-            vim.print(body)
             return {
                 status = "success",
                 output = body,
