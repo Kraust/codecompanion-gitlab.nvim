@@ -74,10 +74,7 @@ return {
             end
             return {
                 status = "success",
-                output = {
-                    role = "assistant",
-                    content = body,
-                }
+                output = body,
             }
         end,
     },
