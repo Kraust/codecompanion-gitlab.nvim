@@ -28,7 +28,7 @@ return {
             -- This issues with the default system_prompt.
             local merged_content = "";
             for _, message in ipairs(messages) do
-                merged_content = merged_content .. "\\n" .. message.content
+                merged_content = merged_content .. "\n" .. message.content
             end
             vim.print(merged_content)
             -- Gitlab Duo currently has a maximum context length of 1000
