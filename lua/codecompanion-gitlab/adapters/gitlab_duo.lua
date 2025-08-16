@@ -115,7 +115,7 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
 
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            if json then
+            if json ~= nil then
                 json = json:gsub("`%s*`%s*`", "```")
             end
             vim.print(json)
