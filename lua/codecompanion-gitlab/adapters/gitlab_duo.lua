@@ -39,6 +39,8 @@ return {
                 end)
                 :totable()
 
+            vim.print(messages)
+
             return {
                 content = "Ignore this context and only respond to additional context",
                 additional_context = messages,
@@ -58,6 +60,8 @@ return {
                     table.insert(transformed, schema)
                 end
             end
+
+            vim.print(transformed)
 
             return { tools = transformed }
         end,
@@ -93,42 +97,15 @@ return {
                                 id = string.format("call_%s_%s", json.created, i)
                             end
 
-                            if self.opts.stream then
-                                local found = false
-                                for _, existing_tool in ipairs(tools) do
-                                    if existing_tool._index == tool_index then
-                                        -- Append to arguments if this is a continuation of a stream
-                                        if tool["function"] and tool["function"]["arguments"] then
-                                            existing_tool["function"]["arguments"] = (existing_tool["function"]["arguments"] or "")
-                                                .. tool["function"]["arguments"]
-                                        end
-                                        found = true
-                                        break
-                                    end
-                                end
-
-                                if not found then
-                                    table.insert(tools, {
-                                        _index = tool_index,
-                                        id = id,
-                                        type = tool.type,
-                                        ["function"] = {
-                                            name = tool["function"]["name"],
-                                            arguments = tool["function"]["arguments"] or "",
-                                        },
-                                    })
-                                end
-                            else
-                                table.insert(tools, {
-                                    _index = i,
-                                    id = id,
-                                    type = tool.type,
-                                    ["function"] = {
-                                        name = tool["function"]["name"],
-                                        arguments = tool["function"]["arguments"],
-                                    },
-                                })
-                            end
+                            table.insert(tools, {
+                                _index = i,
+                                id = id,
+                                type = tool.type,
+                                ["function"] = {
+                                    name = tool["function"]["name"],
+                                    arguments = tool["function"]["arguments"],
+                                },
+                            })
                         end
                     end
                 end
