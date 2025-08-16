@@ -61,8 +61,6 @@ return {
                 end
             end
 
-            vim.print(transformed)
-
             return { tools = transformed }
         end,
         chat_output = function(self, data, tools)
@@ -80,36 +78,34 @@ return {
                 }
             end
 
-            vim.print(json)
-
             -- Process tool calls from all choices
-            if self.opts.tools and tools then
-                for _, choice in ipairs(json.choices) do
-                    local delta = self.opts.stream and choice.delta or choice.message
-
-                    if delta and delta.tool_calls and #delta.tool_calls > 0 then
-                        for i, tool in ipairs(delta.tool_calls) do
-                            local tool_index = tool.index and tonumber(tool.index) or i
-
-                            -- Some endpoints like Gemini do not set this (why?!)
-                            local id = tool.id
-                            if not id or id == "" then
-                                id = string.format("call_%s_%s", json.created, i)
-                            end
-
-                            table.insert(tools, {
-                                _index = i,
-                                id = id,
-                                type = tool.type,
-                                ["function"] = {
-                                    name = tool["function"]["name"],
-                                    arguments = tool["function"]["arguments"],
-                                },
-                            })
-                        end
-                    end
-                end
-            end
+            -- if self.opts.tools and tools then
+            --     for _, choice in ipairs(json.choices) do
+            --         local delta = self.opts.stream and choice.delta or choice.message
+            --
+            --         if delta and delta.tool_calls and #delta.tool_calls > 0 then
+            --             for i, tool in ipairs(delta.tool_calls) do
+            --                 local tool_index = tool.index and tonumber(tool.index) or i
+            --
+            --                 -- Some endpoints like Gemini do not set this (why?!)
+            --                 local id = tool.id
+            --                 if not id or id == "" then
+            --                     id = string.format("call_%s_%s", json.created, i)
+            --                 end
+            --
+            --                 table.insert(tools, {
+            --                     _index = i,
+            --                     id = id,
+            --                     type = tool.type,
+            --                     ["function"] = {
+            --                         name = tool["function"]["name"],
+            --                         arguments = tool["function"]["arguments"],
+            --                     },
+            --                 })
+            --             end
+            --         end
+            --     end
+            -- end
 
 
             return {
