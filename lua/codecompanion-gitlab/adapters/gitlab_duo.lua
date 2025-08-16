@@ -10,7 +10,6 @@ return {
         tool = "tool",
     },
     opts = {
-        stream = true,
         tools = true,
     },
     features = {
