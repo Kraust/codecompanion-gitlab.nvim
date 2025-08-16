@@ -5,6 +5,7 @@ return {
     roles = {
         llm = "assistant",
         user = "user",
+        tool = "tool",
     },
     opts = {
         tools = true,
@@ -43,8 +44,25 @@ return {
                 additional_context = messages,
             }
         end,
+        form_tools = function(self, tools)
+            if not self.opts.tools or not tools then
+                return
+            end
+            if vim.tbl_count(tools) == 0 then
+                return
+            end
+
+            local transformed = {}
+            for _, tool in pairs(tools) do
+                for _, schema in pairs(tool) do
+                    table.insert(transformed, schema)
+                end
+            end
+
+            return { tools = transformed }
+        end,
         chat_output = function(self, data, tools)
-            local ok, body = pcall(vim.json.decode, data.body)
+            local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
                 return {
                     status = "error",
@@ -54,14 +72,74 @@ return {
             if data and data.status >= 400 then
                 return {
                     status = "error",
-                    output = body.error,
+                    output = json.error,
                 }
             end
+
+            vim.print(json)
+
+            -- Process tool calls from all choices
+            if self.opts.tools and tools then
+                for _, choice in ipairs(json.choices) do
+                    local delta = self.opts.stream and choice.delta or choice.message
+
+                    if delta and delta.tool_calls and #delta.tool_calls > 0 then
+                        for i, tool in ipairs(delta.tool_calls) do
+                            local tool_index = tool.index and tonumber(tool.index) or i
+
+                            -- Some endpoints like Gemini do not set this (why?!)
+                            local id = tool.id
+                            if not id or id == "" then
+                                id = string.format("call_%s_%s", json.created, i)
+                            end
+
+                            if self.opts.stream then
+                                local found = false
+                                for _, existing_tool in ipairs(tools) do
+                                    if existing_tool._index == tool_index then
+                                        -- Append to arguments if this is a continuation of a stream
+                                        if tool["function"] and tool["function"]["arguments"] then
+                                            existing_tool["function"]["arguments"] = (existing_tool["function"]["arguments"] or "")
+                                                .. tool["function"]["arguments"]
+                                        end
+                                        found = true
+                                        break
+                                    end
+                                end
+
+                                if not found then
+                                    table.insert(tools, {
+                                        _index = tool_index,
+                                        id = id,
+                                        type = tool.type,
+                                        ["function"] = {
+                                            name = tool["function"]["name"],
+                                            arguments = tool["function"]["arguments"] or "",
+                                        },
+                                    })
+                                end
+                            else
+                                table.insert(tools, {
+                                    _index = i,
+                                    id = id,
+                                    type = tool.type,
+                                    ["function"] = {
+                                        name = tool["function"]["name"],
+                                        arguments = tool["function"]["arguments"],
+                                    },
+                                })
+                            end
+                        end
+                    end
+                end
+            end
+
+
             return {
                 status = "success",
                 output = {
                     role = "assistant",
-                    content = body,
+                    content = json,
                 }
             }
         end,
