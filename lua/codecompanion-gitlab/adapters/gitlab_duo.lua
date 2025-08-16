@@ -49,6 +49,7 @@ return {
             -- that it cannot perform this action.
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             -- json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
             data.body = json
             return openai.handlers.tokens(self, data)
         end,
@@ -111,6 +112,7 @@ Your Response Must:
                 -- that it cannot perform this action.
                 json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
                 -- json = json:gsub("`%s*`%s*`", "```")
+                vim.print(json)
                 data.body = json
             end
             return openai.handlers.chat_output(self, data, tools)
@@ -138,7 +140,7 @@ Your Response Must:
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             -- json = json:gsub("`%s*`%s*`", "```")
             data.body = json
-            vim.print(data.body)
+            vim.print(json)
             return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
