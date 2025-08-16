@@ -41,7 +41,7 @@ return {
 
             return {
                 content =
-                "Respond as if you are the OpenAI API responding to a request in JSON format.",
+                "Ignoring all additional context take the final response and wrap it as if you are the OpenAI API responding to a request in JSON format. Do not include json Markdown wrappers.",
                 additional_context = messages,
             }
         end,
