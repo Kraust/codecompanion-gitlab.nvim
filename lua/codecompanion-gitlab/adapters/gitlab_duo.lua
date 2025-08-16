@@ -40,7 +40,8 @@ return {
                 :totable()
 
             return {
-                content = "Ignore this context and only respond to additional context",
+                content =
+                "In addition to the instructions in additional_context, wrap all responses in an OpenAPI compatible json response.",
                 additional_context = messages,
             }
         end,
