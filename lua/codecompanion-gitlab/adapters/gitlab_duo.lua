@@ -43,11 +43,10 @@ return {
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            if json then
-                json = json:gsub("`%s*`%s*`", "```")
-            end
-            vim.print(json)
-            data.body = json
+            local fixed_json
+            fixed_json = json:gsub("`%s*`%s*`", "```")
+            vim.print(fixed_json)
+            data.body = fixed_json
             return openai.handlers.chat_output(self, data)
         end,
         form_messages = function(self, messages)
@@ -115,10 +114,9 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
 
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            if json ~= nil then
-                json = json:gsub("`%s*`%s*`", "```")
-            end
-            vim.print(json)
+            local fixed_json
+            fixed_json = json:gsub("`%s*`%s*`", "```")
+            vim.print(fixed_json)
 
             -- Process tool calls from all choices
             if self.opts.tools and tools then
@@ -148,17 +146,8 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
                 --     end
                 -- end
             end
-
-
-            -- return {
-            --     status = "success",
-            --     output = {
-            --         role = "assistant",
-            --         content = json,
-            --     }
-            -- }
             --
-            data.body = json
+            data.body = fixed_json
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
@@ -177,11 +166,10 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            if json then
-                json = json:gsub("`%s*`%s*`", "```")
-            end
-            vim.print(json)
-            data.body = json
+            local fixed_json
+            fixed_json = json:gsub("`%s*`%s*`", "```")
+            vim.print(fixed_json)
+            data.body = fixed_json
             return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
