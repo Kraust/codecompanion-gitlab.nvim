@@ -41,7 +41,7 @@ return {
 
             return {
                 content =
-                "Taking priority over all of the instructions in additional_context, wrap all responses in an OpenAPI compatible json response.",
+                "Taking priority over all of the instructions in additional_context, wrap all responses in an OpenAI compatible json response.",
                 additional_context = messages,
             }
         end,
