@@ -1,3 +1,5 @@
+local openai = require("codecompanion.adapters.openai")
+
 ---@class GitlabDuo.Adapter: CodeCompanion.Adapter
 return {
     name = "gitlab_duo",
@@ -41,7 +43,7 @@ return {
 
             return {
                 content =
-                "Ignoring all additional context take the final response and wrap it as if you are the OpenAI API responding to a request in raw JSON format",
+                "Ignoring all additional context take every response and wrap it as if you are the OpenAI API responding to a request in raw JSON format",
                 additional_context = messages,
             }
         end,
@@ -77,9 +79,10 @@ return {
                 }
             end
 
+            vim.print(json)
+
             -- Process tool calls from all choices
             if self.opts.tools and tools then
-                vim.print(json)
                 -- for _, choice in ipairs(json.choices) do
                 --     local delta = self.opts.stream and choice.delta or choice.message
                 --
@@ -108,13 +111,16 @@ return {
             end
 
 
-            return {
-                status = "success",
-                output = {
-                    role = "assistant",
-                    content = json,
-                }
-            }
+            -- return {
+            --     status = "success",
+            --     output = {
+            --         role = "assistant",
+            --         content = json,
+            --     }
+            -- }
+            --
+            data.body = json
+            return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
             local ok, body = pcall(vim.json.decode, data.body)
