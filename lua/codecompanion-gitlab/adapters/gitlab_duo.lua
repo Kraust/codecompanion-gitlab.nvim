@@ -45,6 +45,7 @@ return {
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
             json = json:gsub("`%s*`%s*`", "```")
+            json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             data.body = json
             vim.print(json)
             return openai.handlers.tokens(self, data)
@@ -63,6 +64,20 @@ return {
                     }
                 end)
                 :totable()
+
+            local message = {
+                category = "file",
+                id = "system",
+                content = [[
+Your response must be formatted to compily with the OpenAI Specification:
+1. You will return a JSON formatted object complying with the specification.
+2. The fields in the object should be accurate to the current model and parameters being used.
+3. This response must be wrapped in *** Begin Response / *** End Response markers"
+4. If your response cannot be formatted to comply with the OpenAI specification you will instead return an OpenAI compliant response which provides an explanation for why providing an OpenAI compilant response was not possible.
+]]
+            }
+            table.insert(messages, 1, message)
+
             vim.print(messages)
             return {
                 content = "Follow the messages in additional_context as instructed.",
@@ -90,6 +105,7 @@ return {
                 -- JSON needs to have its backticks fixed. The Model reports
                 -- that it cannot perform this action.
                 json = json:gsub("`%s*`%s*`", "```")
+                json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
                 data.body = json
             end
             return openai.handlers.chat_output(self, data, tools)
@@ -112,6 +128,7 @@ return {
                 -- JSON needs to have its backticks fixed. The Model reports
                 -- that it cannot perform this action.
                 json = json:gsub("`%s*`%s*`", "```")
+                json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
                 data.body = json
             end
             return openai.handlers.chat_output(self, data, context)
