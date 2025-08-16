@@ -80,8 +80,7 @@ Your Response Must:
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
 If you're requested to return a JSON object:
 1. The JSON object should not replace the OpenAI response.
-2. The JSON object should be serialized as a string.
-3. Use actual line breaks in your responses; only use "\n" when you want a literal backslash followed by 'n'.
+2. The JSON object should be minified and serialized as a string.
 ]]
             }
             table.insert(messages, 1, message)
