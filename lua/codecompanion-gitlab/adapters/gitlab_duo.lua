@@ -50,7 +50,7 @@ return {
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             -- json = json:gsub("`%s*`%s*`", "```")
             vim.print(json)
-            data.body = pcall(vim.json.encode, json)
+            data.body = json
             vim.print(data.body)
             return openai.handlers.tokens(self, data)
         end,
@@ -76,7 +76,7 @@ return {
                 content = [[
 Your Response Must:
 1. Be wrapped in *** Begin Response / *** End Response markers"
-2. Must be a minified JSON-formatted OpenAI Response.
+2. Must be an encoded JSON-formatted OpenAI Response which has been minifiled before encoding.
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
 ]]
             }
