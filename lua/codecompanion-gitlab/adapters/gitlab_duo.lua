@@ -95,7 +95,8 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
             if json.choices and json.choices[1] and json.choices[1].message then
-                json.choices[1].message.content = json.choices[1].message.content:gsub("` ` `", "```")
+                vim.print("????")
+                json.choices[1].message.content = json.choices[1].message.content:gsub("`%s*`%s*`", "```")
             end
 
             vim.print(json)
