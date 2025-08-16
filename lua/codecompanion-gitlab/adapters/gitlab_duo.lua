@@ -43,7 +43,7 @@ return {
 
             return {
                 content =
-                "Ignoring all additional context take every response and wrap it as if you are the OpenAI API responding to a request in raw JSON format",
+                "Ignoringthe current model being used. context take every response and wrap it as if you are the OpenAI API responding to a request in raw JSON format. The fields in the response should be accurate to the current model being used.",
                 additional_context = messages,
             }
         end,
@@ -65,6 +65,8 @@ return {
             return { tools = transformed }
         end,
         chat_output = function(self, data, tools)
+            vim.print(data.body)
+
             local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
                 return {
