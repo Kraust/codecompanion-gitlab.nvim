@@ -40,7 +40,6 @@ return {
             if not data or data == "" then
                 return nil
             end
-            vim.print(data)
             local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
                 return {
@@ -59,7 +58,6 @@ return {
             json = json:gsub("`%s*`%s*`", "```")
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             data.body = json
-            vim.print(json)
             return openai.handlers.tokens(self, data)
         end,
         form_parameters = function(self, params, messages)
@@ -91,7 +89,6 @@ Your response must be formatted to compily with the OpenAI Specification:
             }
             table.insert(messages, 1, message)
 
-            vim.print(messages)
             return {
                 content = "Follow the messages in additional_context as instructed.",
                 additional_context = messages,
@@ -105,7 +102,6 @@ Your response must be formatted to compily with the OpenAI Specification:
                 return nil
             end
             if self.opts and self.opts.tokens == false then
-                vim.print(data)
                 local ok, json = pcall(vim.json.decode, data.body)
                 if not ok then
                     return {
@@ -131,7 +127,6 @@ Your response must be formatted to compily with the OpenAI Specification:
             if not data or data == "" then
                 return nil
             end
-            vim.print(data)
             local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
                 return {
@@ -150,7 +145,7 @@ Your response must be formatted to compily with the OpenAI Specification:
             json = json:gsub("`%s*`%s*`", "```")
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             data.body = json
-            vim.print(data)
+            vim.print(data.body)
             return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
