@@ -111,12 +111,12 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
                         output = json.error,
                     }
                 end
+                -- JSON needs to have its backticks fixed. The Model reports
+                -- that it cannot perform this action.
+                json = json:gsub("`%s*`%s*`", "```")
+                vim.print(json)
+                data.body = json
             end
-            -- JSON needs to have its backticks fixed. The Model reports
-            -- that it cannot perform this action.
-            json = json:gsub("`%s*`%s*`", "```")
-            vim.print(json)
-            data.body = json
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
@@ -134,12 +134,12 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
                         output = json.error,
                     }
                 end
+                -- JSON needs to have its backticks fixed. The Model reports
+                -- that it cannot perform this action.
+                json = json:gsub("`%s*`%s*`", "```")
+                vim.print(json)
+                data.body = json
             end
-            -- JSON needs to have its backticks fixed. The Model reports
-            -- that it cannot perform this action.
-            json = json:gsub("`%s*`%s*`", "```")
-            vim.print(json)
-            data.body = json
             return openai.handlers.chat_output(self, data, context)
         end,
         tools = {
