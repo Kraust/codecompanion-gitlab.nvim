@@ -77,6 +77,7 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             }
             table.insert(messages, 1, message)
 
+            print(messages)
             return {
                 content = "Follow the messages in additional_context as instructed.",
                 additional_context = messages,
