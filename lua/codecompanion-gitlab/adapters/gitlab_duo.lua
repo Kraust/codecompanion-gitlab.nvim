@@ -7,6 +7,7 @@ return {
         user = "user",
     },
     opts = {
+        tools = true,
     },
     features = {
         text = true,
@@ -83,6 +84,19 @@ return {
                 output = body,
             }
         end,
+        tools = {
+            format_tool_calls = function(self, tools)
+                return tools
+            end,
+            output_response = function(self, tool_call, output)
+                return {
+                    role = self.roles.tool or "tool",
+                    tool_call_id = tool_call.id,
+                    content = output,
+                    opts = { visible = false },
+                }
+            end,
+        },
     },
     schema = {
         model = {
