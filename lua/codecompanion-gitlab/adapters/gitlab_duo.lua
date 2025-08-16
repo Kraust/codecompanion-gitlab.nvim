@@ -45,18 +45,17 @@ return {
                 category = "file",
                 id = "user",
                 content = [[
-Ignoring all additional context:
-    - Take every response and wrap it as if you are the OpenAI API responding to a request.
+Finally, wrap your response according to the following guidelines:
+    - You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
     - The response should be in raw JSON format.
     - The fields in the response should be accurate to the current model being used.
-    - markdown backticks should not be escaped with spaces.
+    - Do NOT escape markdown backticks with spaces.
 ]]
             }
-
-            table.insert(messages, 1, message)
+            messages[messages + 1] = message
 
             return {
-                content = "Ignore this field. Do as additional_context instructs.",
+                content = "Follow the messages in additional_context as instructed.",
                 additional_context = messages,
             }
         end,
