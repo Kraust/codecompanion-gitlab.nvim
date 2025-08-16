@@ -10,6 +10,7 @@ return {
         tool = "tool",
     },
     opts = {
+        stream = true,
         tools = true,
     },
     features = {
@@ -27,7 +28,18 @@ return {
         ["Authorization"] = "Bearer ${api_key}",
     },
     handlers = {
+        setup = function(self)
+            if self.opts and self.opts.stream then
+                self.parameters.stream = true
+                self.parameters.stream_options = { include_usage = true }
+            end
+            return true
+        end,
+
         tokens = function(self, data)
+            if not data or data == "" then
+                return nil
+            end
             vim.print(data)
             local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
@@ -88,6 +100,9 @@ Your response must be formatted to compily with the OpenAI Specification:
             return openai.handlers.form_tools(self, tools)
         end,
         chat_output = function(self, data, tools)
+            if not data or data == "" then
+                return nil
+            end
             if self.opts and self.opts.tokens == false then
                 vim.print(data)
                 local ok, json = pcall(vim.json.decode, data.body)
@@ -112,6 +127,9 @@ Your response must be formatted to compily with the OpenAI Specification:
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
+            if not data or data == "" then
+                return nil
+            end
             if self.opts and self.opts.tokens == false then
                 vim.print(data)
                 local ok, json = pcall(vim.json.decode, data.body)
@@ -133,7 +151,7 @@ Your response must be formatted to compily with the OpenAI Specification:
                 json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
                 data.body = json
             end
-            return openai.handlers.chat_output(self, data, context)
+            return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
             format_tool_calls = function(self, tools)
