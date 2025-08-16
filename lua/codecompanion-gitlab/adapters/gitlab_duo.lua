@@ -43,7 +43,9 @@ return {
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            json = json:gsub("`%s*`%s*`", "```")
+            if json then
+                json = json:gsub("`%s*`%s*`", "```")
+            end
             vim.print(json)
             data.body = json
             return openai.handlers.chat_output(self, data)
@@ -113,8 +115,9 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
 
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            json = json:gsub("`%s*`%s*`", "```")
-
+            if json then
+                json = json:gsub("`%s*`%s*`", "```")
+            end
             vim.print(json)
 
             -- Process tool calls from all choices
@@ -174,7 +177,9 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            json = json:gsub("`%s*`%s*`", "```")
+            if json then
+                json = json:gsub("`%s*`%s*`", "```")
+            end
             vim.print(json)
             data.body = json
             return openai.handlers.inline_output(self, data, context)
