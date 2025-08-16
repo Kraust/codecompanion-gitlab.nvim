@@ -63,19 +63,6 @@ return {
                     }
                 end)
                 :totable()
-
-            local message = {
-                category = "file",
-                id = "system",
-                content = [[
-You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
-    - You will return a SINGLE JSON formatted response.
-    - This response should comply with the OpenAI Spec.
-    - The fields in the response should be accurate to the current model being used.
-]]
-            }
-            table.insert(messages, 1, message)
-
             vim.print(messages)
             return {
                 content = "Follow the messages in additional_context as instructed.",
