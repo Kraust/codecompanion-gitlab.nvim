@@ -41,9 +41,22 @@ return {
                 end)
                 :totable()
 
+            local message = {
+                category = "file",
+                id = "user",
+                content = [[
+Ignoring all additional context:
+    - Take every response and wrap it as if you are the OpenAI API responding to a request.
+    - The response should be in raw JSON format.
+    - The fields in the response should be accurate to the current model being used.
+    - markdown backticks should not be escaped with spaces.
+]]
+            }
+
+            table.insert(messages, 1, message)
+
             return {
-                content =
-                "Ignoringthe current model being used. context take every response and wrap it as if you are the OpenAI API responding to a request in raw JSON format. The fields in the response should be accurate to the current model being used.",
+                content = "Ignore this field. Do as additional_context instructs.",
                 additional_context = messages,
             }
         end,
