@@ -130,27 +130,26 @@ Your response must be formatted to compily with the OpenAI Specification:
             if not data or data == "" then
                 return nil
             end
-            if self.opts and self.opts.tokens == false then
-                vim.print(data)
-                local ok, json = pcall(vim.json.decode, data.body)
-                if not ok then
-                    return {
-                        status = "error",
-                        output = "Could not parse JSON response",
-                    }
-                end
-                if data and data.status >= 400 then
-                    return {
-                        status = "error",
-                        output = json.error,
-                    }
-                end
-                -- JSON needs to have its backticks fixed. The Model reports
-                -- that it cannot perform this action.
-                json = json:gsub("`%s*`%s*`", "```")
-                json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
-                data.body = json
+            vim.print(data)
+            local ok, json = pcall(vim.json.decode, data.body)
+            if not ok then
+                return {
+                    status = "error",
+                    output = "Could not parse JSON response",
+                }
             end
+            if data and data.status >= 400 then
+                return {
+                    status = "error",
+                    output = json.error,
+                }
+            end
+            -- JSON needs to have its backticks fixed. The Model reports
+            -- that it cannot perform this action.
+            json = json:gsub("`%s*`%s*`", "```")
+            json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
+            data.body = json
+            vim.print(data)
             return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
