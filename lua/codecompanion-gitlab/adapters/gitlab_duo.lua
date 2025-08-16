@@ -79,8 +79,30 @@ Your Response Must:
 2. Must be a serialized JSON-formatted OpenAI Response which has been minifiled before serialization.
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
 If you're requested to return a JSON object:
-1. The JSON object should not replace the OpenAI response.
-2. The JSON object should be minified and serialized as a string.
+- You should serialize it in as a string represented as %s in the following format:
+```json
+{
+    "id": "chatcmpl-codecompanion-023",
+    "object": "chat.completion",
+    "created": 1703097716,
+    "model": "codecompanion",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "%s"
+            }
+        }
+    ],
+    "finish_reason": "stop",
+    "usage": {
+        "prompt_tokens": 150,
+        "completion_tokens": 600,
+        "total_tokens": 750
+    }
+}
+```
 ]]
             }
             table.insert(messages, 1, message)
