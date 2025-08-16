@@ -76,7 +76,7 @@ return {
                 content = [[
 Your Response Must:
 1. Be wrapped in *** Begin Response / *** End Response markers"
-2. Must be an encoded JSON-formatted OpenAI Response which has been minifiled before encoding.
+2. Must be a serialized JSON-formatted OpenAI Response which has been minifiled before serialization.
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
 ]]
             }
