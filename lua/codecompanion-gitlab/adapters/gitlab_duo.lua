@@ -50,7 +50,8 @@ return {
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             -- json = json:gsub("`%s*`%s*`", "```")
             vim.print(json)
-            data.body = json
+            data.body = pcall(vim.json.encode, json)
+            vim.print(data.body)
             return openai.handlers.tokens(self, data)
         end,
         form_parameters = function(self, params, messages)
@@ -90,7 +91,6 @@ Your Response Must:
             return openai.handlers.form_tools(self, tools)
         end,
         chat_output = function(self, data, tools)
-            vim.print(data.body)
             if not data or data == "" then
                 return nil
             end
@@ -112,13 +112,11 @@ Your Response Must:
                 -- that it cannot perform this action.
                 json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
                 -- json = json:gsub("`%s*`%s*`", "```")
-                vim.print(json)
                 data.body = json
             end
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
-            vim.print(data.body)
             if not data or data == "" then
                 return nil
             end
@@ -140,7 +138,6 @@ Your Response Must:
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             -- json = json:gsub("`%s*`%s*`", "```")
             data.body = json
-            vim.print(json)
             return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
