@@ -68,10 +68,10 @@ return {
                 id = "user",
                 content = [[
 You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
-    - All responses should be in raw JSON format.
+    - You will return a SINGLE JSON OBJECT. If the response contains multiple replies, serialize them within the choices field of teh OpenAI Response.
     - The fields in the response should be accurate to the current model being used.
     - Do NOT respond with anything other than OpenAI compatible responses.
-    - If there are multiple responses in a single response, combine them into a single response.
+    - Do NOT respond with anything other than valid JSON.
 ]]
             }
             table.insert(messages, 1, message)
