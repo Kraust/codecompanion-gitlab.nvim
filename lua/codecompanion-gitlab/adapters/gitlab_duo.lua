@@ -14,7 +14,7 @@ return {
     },
     features = {
         text = true,
-        tokens = false,
+        tokens = true,
     },
     url = "${url}${chat_url}",
     env = {
@@ -27,6 +27,27 @@ return {
         ["Authorization"] = "Bearer ${api_key}",
     },
     handlers = {
+        tokens = function(self, data)
+            local ok, json = pcall(vim.json.decode, data.body)
+            if not ok then
+                return {
+                    status = "error",
+                    output = "Could not parse JSON response",
+                }
+            end
+            if data and data.status >= 400 then
+                return {
+                    status = "error",
+                    output = json.error,
+                }
+            end
+            -- JSON needs to have its backticks fixed. The Model reports
+            -- that it cannot perform this action.
+            json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
+            data.body = json
+            return openai.handlers.chat_output(self, data)
+        end,
         form_messages = function(self, messages)
             -- messages must be shorter than 1000 characters.
             -- This issues with the default system_prompt.
@@ -76,8 +97,6 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             return { tools = transformed }
         end,
         chat_output = function(self, data, tools)
-            vim.print(data.body)
-
             local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
                 return {
@@ -140,7 +159,7 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
-            local ok, body = pcall(vim.json.decode, data.body)
+            local ok, json = pcall(vim.json.decode, data.body)
             if not ok then
                 return {
                     status = "error",
@@ -150,25 +169,22 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             if data and data.status >= 400 then
                 return {
                     status = "error",
-                    output = body.error,
+                    output = json.error,
                 }
             end
-            return {
-                status = "success",
-                output = body,
-            }
+            -- JSON needs to have its backticks fixed. The Model reports
+            -- that it cannot perform this action.
+            json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
+            data.body = json
+            return openai.handlers.inline_output(self, data, context)
         end,
         tools = {
             format_tool_calls = function(self, tools)
-                return tools
+                return openai.handlers.tools.format_tool_calls(self, tools)
             end,
             output_response = function(self, tool_call, output)
-                return {
-                    role = self.roles.tool or "tool",
-                    tool_call_id = tool_call.id,
-                    content = output,
-                    opts = { visible = false },
-                }
+                return openai.handlers.tools.output_response(self, tool_call, output)
             end,
         },
     },
