@@ -97,7 +97,7 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             return { tools = transformed }
         end,
         chat_output = function(self, data, tools)
-            if self.opts and not self.opts.tokens then
+            if self.opts and self.opts.tokens == false then
                 local ok, json = pcall(vim.json.decode, data.body)
                 if not ok then
                     return {
@@ -120,7 +120,7 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
-            if self.opts and not self.opts.tokens then
+            if self.opts and self.opts.tokens == false then
                 local ok, json = pcall(vim.json.decode, data.body)
                 if not ok then
                     return {
