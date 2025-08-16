@@ -14,7 +14,7 @@ return {
     },
     features = {
         text = true,
-        tokens = true,
+        tokens = false,
     },
     url = "${url}${chat_url}",
     env = {
@@ -27,28 +27,6 @@ return {
         ["Authorization"] = "Bearer ${api_key}",
     },
     handlers = {
-        tokens = function(self, data)
-            local ok, json = pcall(vim.json.decode, data.body)
-            if not ok then
-                return {
-                    status = "error",
-                    output = "Could not parse JSON response",
-                }
-            end
-            if data and data.status >= 400 then
-                return {
-                    status = "error",
-                    output = json.error,
-                }
-            end
-            -- JSON needs to have its backticks fixed. The Model reports
-            -- that it cannot perform this action.
-            local fixed_json
-            fixed_json = json:gsub("`%s*`%s*`", "```")
-            vim.print(fixed_json)
-            data.body = fixed_json
-            return openai.handlers.chat_output(self, data)
-        end,
         form_messages = function(self, messages)
             -- messages must be shorter than 1000 characters.
             -- This issues with the default system_prompt.
@@ -111,43 +89,11 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
                     output = json.error,
                 }
             end
-
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            local fixed_json
-            fixed_json = json:gsub("`%s*`%s*`", "```")
-            vim.print(fixed_json)
-
-            -- Process tool calls from all choices
-            if self.opts.tools and tools then
-                -- for _, choice in ipairs(json.choices) do
-                --     local delta = self.opts.stream and choice.delta or choice.message
-                --
-                --     if delta and delta.tool_calls and #delta.tool_calls > 0 then
-                --         for i, tool in ipairs(delta.tool_calls) do
-                --             local tool_index = tool.index and tonumber(tool.index) or i
-                --
-                --             -- Some endpoints like Gemini do not set this (why?!)
-                --             local id = tool.id
-                --             if not id or id == "" then
-                --                 id = string.format("call_%s_%s", json.created, i)
-                --             end
-                --
-                --             table.insert(tools, {
-                --                 _index = i,
-                --                 id = id,
-                --                 type = tool.type,
-                --                 ["function"] = {
-                --                     name = tool["function"]["name"],
-                --                     arguments = tool["function"]["arguments"],
-                --                 },
-                --             })
-                --         end
-                --     end
-                -- end
-            end
-            --
-            data.body = fixed_json
+            json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
+            data.body = json
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
@@ -166,11 +112,10 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
-            local fixed_json
-            fixed_json = json:gsub("`%s*`%s*`", "```")
-            vim.print(fixed_json)
-            data.body = fixed_json
-            return openai.handlers.inline_output(self, data, context)
+            json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
+            data.body = json
+            return openai.handlers.chat_output(self, data, context)
         end,
         tools = {
             format_tool_calls = function(self, tools)
