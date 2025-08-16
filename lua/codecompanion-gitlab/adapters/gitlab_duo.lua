@@ -83,6 +83,7 @@ Your Response Must:
 1. Be wrapped in *** Begin Response / *** End Response markers"
 2. Must be a minifiled JSON-formatted OpenAI Response.
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
+3. The text requested by the propmpt should not try and escape dobule quoted strings with backticks.
 ]]
             }
             table.insert(messages, 1, message)
