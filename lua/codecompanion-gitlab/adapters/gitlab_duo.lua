@@ -48,7 +48,7 @@ return {
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
-            -- json = json:gsub("`%s*`%s*`", "```")
+            json = json:gsub("`%s*`%s*`", "```")
             vim.print(json)
             data.body = json
             vim.print(data.body)
@@ -111,7 +111,7 @@ Your Response Must:
                 -- JSON needs to have its backticks fixed. The Model reports
                 -- that it cannot perform this action.
                 json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
-                -- json = json:gsub("`%s*`%s*`", "```")
+                json = json:gsub("`%s*`%s*`", "```")
                 data.body = json
             end
             return openai.handlers.chat_output(self, data, tools)
@@ -136,7 +136,7 @@ Your Response Must:
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
-            -- json = json:gsub("`%s*`%s*`", "```")
+            json = json:gsub("`%s*`%s*`", "```")
             data.body = json
             return openai.handlers.inline_output(self, data, context)
         end,
