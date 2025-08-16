@@ -14,7 +14,7 @@ return {
     },
     features = {
         text = true,
-        tokens = false,
+        tokens = true,
     },
     url = "${url}${chat_url}",
     env = {
@@ -27,6 +27,27 @@ return {
         ["Authorization"] = "Bearer ${api_key}",
     },
     handlers = {
+        tokens = function(self, data)
+            local ok, json = pcall(vim.json.decode, data.body)
+            if not ok then
+                return {
+                    status = "error",
+                    output = "Could not parse JSON response",
+                }
+            end
+            if data and data.status >= 400 then
+                return {
+                    status = "error",
+                    output = json.error,
+                }
+            end
+            -- JSON needs to have its backticks fixed. The Model reports
+            -- that it cannot perform this action.
+            json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
+            data.body = json
+            return openai.handlers.tokens(self, data)
+        end,
         form_messages = function(self, messages)
             -- messages must be shorter than 1000 characters.
             -- This issues with the default system_prompt.
@@ -76,18 +97,20 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             return { tools = transformed }
         end,
         chat_output = function(self, data, tools)
-            local ok, json = pcall(vim.json.decode, data.body)
-            if not ok then
-                return {
-                    status = "error",
-                    output = "Could not parse JSON response",
-                }
-            end
-            if data and data.status >= 400 then
-                return {
-                    status = "error",
-                    output = json.error,
-                }
+            if self.opts and not self.opts.tokens then
+                local ok, json = pcall(vim.json.decode, data.body)
+                if not ok then
+                    return {
+                        status = "error",
+                        output = "Could not parse JSON response",
+                    }
+                end
+                if data and data.status >= 400 then
+                    return {
+                        status = "error",
+                        output = json.error,
+                    }
+                end
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
@@ -97,18 +120,20 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
-            local ok, json = pcall(vim.json.decode, data.body)
-            if not ok then
-                return {
-                    status = "error",
-                    output = "Could not parse JSON response",
-                }
-            end
-            if data and data.status >= 400 then
-                return {
-                    status = "error",
-                    output = json.error,
-                }
+            if self.opts and not self.opts.tokens then
+                local ok, json = pcall(vim.json.decode, data.body)
+                if not ok then
+                    return {
+                        status = "error",
+                        output = "Could not parse JSON response",
+                    }
+                end
+                if data and data.status >= 400 then
+                    return {
+                        status = "error",
+                        output = json.error,
+                    }
+                end
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
