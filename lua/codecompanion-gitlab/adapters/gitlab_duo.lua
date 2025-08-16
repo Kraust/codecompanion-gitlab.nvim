@@ -117,6 +117,7 @@ Your Response Must:
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
+            vim.print(data.body)
             if not data or data == "" then
                 return nil
             end
@@ -137,6 +138,7 @@ Your Response Must:
             -- that it cannot perform this action.
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             json = json:gsub("`%s*`%s*`", "```")
+            vim.print(json)
             data.body = json
             return openai.handlers.inline_output(self, data, context)
         end,
