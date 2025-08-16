@@ -48,9 +48,10 @@ return {
             data.body = json
             return openai.handlers.tokens(self, data)
         end,
+        form_parameters = function(self, params, messages)
+            return openai.handlers.form_parameters(self, params, messages)
+        end,
         form_messages = function(self, messages)
-            -- messages must be shorter than 1000 characters.
-            -- This issues with the default system_prompt.
             messages = vim
                 .iter(messages)
                 :map(function(message)
@@ -80,21 +81,7 @@ You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
             }
         end,
         form_tools = function(self, tools)
-            if not self.opts.tools or not tools then
-                return
-            end
-            if vim.tbl_count(tools) == 0 then
-                return
-            end
-
-            local transformed = {}
-            for _, tool in pairs(tools) do
-                for _, schema in pairs(tool) do
-                    table.insert(transformed, schema)
-                end
-            end
-
-            return { tools = transformed }
+            return openai.handlers.form_tools(self, tools)
         end,
         chat_output = function(self, data, tools)
             if self.opts and self.opts.tokens == false then
