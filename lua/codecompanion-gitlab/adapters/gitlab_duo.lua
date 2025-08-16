@@ -17,8 +17,6 @@ return {
         text = true,
         tokens = true,
     },
-    parameters = {
-    },
     url = "${url}${chat_url}",
     env = {
         api_key = "GITLAB_API_KEY",
@@ -30,14 +28,6 @@ return {
         ["Authorization"] = "Bearer ${api_key}",
     },
     handlers = {
-        setup = function(self)
-            if self.opts and self.opts.stream then
-                self.parameters.stream = true
-                self.parameters.stream_options = { include_usage = true }
-            end
-            return true
-        end,
-
         tokens = function(self, data)
             if not data or data == "" then
                 return nil
