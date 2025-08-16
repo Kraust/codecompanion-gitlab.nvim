@@ -83,7 +83,7 @@ Your response must be formatted to compily with the OpenAI Specification:
 1. You must return a JSON formatted object complying with the specification.
 2. The fields in the object should be accurate to the current model and parameters being used.
 3. This response must be wrapped in *** Begin Response / *** End Response markers"
-4. Future formatting requirements must be placed within the choices section of the response instead of modifying the OpenAI response itself.
+4. Future formatting requirements must be placed within the choices section of the response instead of modifying the OpenAI response wrapped in markdown when requested.
 5. If your response cannot be formatted to comply with the OpenAI specification you will instead return an OpenAI compliant response which provides an explanation for why providing an OpenAI compilant response was not possible.
 ]]
             }
