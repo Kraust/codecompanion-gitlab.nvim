@@ -17,6 +17,8 @@ return {
         text = true,
         tokens = true,
     },
+    parameters = {
+    },
     url = "${url}${chat_url}",
     env = {
         api_key = "GITLAB_API_KEY",
