@@ -52,7 +52,7 @@ Finally, wrap your response according to the following guidelines:
     - Do NOT escape markdown backticks with spaces.
 ]]
             }
-            messages[messages + 1] = message
+            table.insert(messages, message)
 
             return {
                 content = "Follow the messages in additional_context as instructed.",
