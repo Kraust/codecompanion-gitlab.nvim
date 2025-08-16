@@ -66,13 +66,12 @@ return {
 
             local message = {
                 category = "file",
-                id = "user",
+                id = "system",
                 content = [[
 You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
-    - You will return a SINGLE JSON OBJECT. If the response contains multiple replies, serialize them within the choices field of teh OpenAI Response.
+    - You will return a SINGLE JSON formatted response.
+    - This response should comply with the OpenAI Spec.
     - The fields in the response should be accurate to the current model being used.
-    - Do NOT respond with anything other than OpenAI compatible responses.
-    - Do NOT respond with anything other than valid JSON.
 ]]
             }
             table.insert(messages, 1, message)
