@@ -81,7 +81,7 @@ Your Response Must:
 If you're requested to return a JSON object:
 1. The JSON object should not replace the OpenAI response.
 2. The JSON object should be serialized as a string.
-3. The JSON object should be serialized using "\n" for newlines instead of "\\n".
+3. Use actual line breaks in your responses; only use "\n" when you want a literal backslash followed by 'n'.
 ]]
             }
             table.insert(messages, 1, message)
