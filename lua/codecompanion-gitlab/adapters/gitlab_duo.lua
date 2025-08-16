@@ -78,7 +78,9 @@ Your Response Must:
 1. Be wrapped in *** Begin Response / *** End Response markers"
 2. Must be a serialized JSON-formatted OpenAI Response which has been minifiled before serialization.
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
-4. If asked to return a json object, this json object should not replace the OpenAI response.
+If you're requested to return a JSON object:
+1. The JSON object should not replace the OpenAI response.
+2. The JSON object should be serialized and inserted into the message field of the choice.
 ]]
             }
             table.insert(messages, 1, message)
