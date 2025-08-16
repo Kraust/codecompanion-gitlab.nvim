@@ -89,6 +89,7 @@ Your response must be formatted to compily with the OpenAI Specification:
         end,
         chat_output = function(self, data, tools)
             if self.opts and self.opts.tokens == false then
+                vim.print(data)
                 local ok, json = pcall(vim.json.decode, data.body)
                 if not ok then
                     return {
@@ -112,6 +113,7 @@ Your response must be formatted to compily with the OpenAI Specification:
         end,
         inline_output = function(self, data, context)
             if self.opts and self.opts.tokens == false then
+                vim.print(data)
                 local ok, json = pcall(vim.json.decode, data.body)
                 if not ok then
                     return {
