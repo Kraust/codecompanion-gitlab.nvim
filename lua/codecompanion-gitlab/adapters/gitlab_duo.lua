@@ -45,14 +45,14 @@ return {
                 category = "file",
                 id = "user",
                 content = [[
-Finally, wrap your response according to the following guidelines:
-    - You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
+You are an OpenAI Compatible API and should conform to the OpenAI API Spec.
     - The response should be in raw JSON format.
     - The fields in the response should be accurate to the current model being used.
     - Do NOT escape markdown backticks with spaces.
+    - Do NOT respond with anything other than OpenAI compatible responses.
 ]]
             }
-            table.insert(messages, message)
+            table.insert(messages, 1, message)
 
             return {
                 content = "Follow the messages in additional_context as instructed.",
