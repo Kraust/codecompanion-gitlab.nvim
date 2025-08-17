@@ -46,6 +46,9 @@ return {
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
+            if json == nil then
+                vim.print(data)
+            end
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             json = json:gsub("`%s*`%s*`", "```")
             data.body = json
