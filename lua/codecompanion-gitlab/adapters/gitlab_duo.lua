@@ -103,7 +103,6 @@ If you're requested to return a JSON object:
     }
 }
 ```
-2. This string should not use backticks as an escape character.
 ]]
             }
             table.insert(messages, 1, message)
