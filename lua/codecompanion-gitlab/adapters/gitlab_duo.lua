@@ -79,8 +79,9 @@ Your Response Must:
 2. Must be a serialized JSON-formatted OpenAI Response which has been minifiled before serialization.
 3. The text requested by the propmt must be serialized as a string and inserted into the JSON-formatted OpenAI response.
 If you're requested to return a JSON object:
-1. URLs should not be escaped with backticks.
-2. You should serialize it in as a string represented as %s in the following format:
+1. Use proper JSON escaping: \' for single quotes, \" for double quotes
+2. Do not use backticks as escape characters
+3. You should serialize it in as a string represented as %s in the following format:
 ```json
 {
     "id": "chatcmpl-codecompanion-023",
