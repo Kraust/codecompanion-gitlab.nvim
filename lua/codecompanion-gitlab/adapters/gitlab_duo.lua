@@ -28,7 +28,6 @@ return {
     },
     handlers = {
         tokens = function(self, data)
-            vim.print(data.body)
             if not data or data == "" then
                 return nil
             end
@@ -49,16 +48,13 @@ return {
             -- that it cannot perform this action.
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             json = json:gsub("`%s*`%s*`", "```")
-            vim.print(json)
             data.body = json
-            vim.print(data.body)
             return openai.handlers.tokens(self, data)
         end,
         form_parameters = function(self, params, messages)
             return openai.handlers.form_parameters(self, params, messages)
         end,
         form_messages = function(self, messages)
-            vim.print(messages)
             messages = vim
                 .iter(messages)
                 :map(function(message)
@@ -103,6 +99,7 @@ If you're requested to return a JSON object:
     }
 }
 ```
+2. If the content field is not a valid json string because it ends with two double quotes, remove one of them.
 ]]
             }
             table.insert(messages, 1, message)
@@ -142,7 +139,6 @@ If you're requested to return a JSON object:
             return openai.handlers.chat_output(self, data, tools)
         end,
         inline_output = function(self, data, context)
-            vim.print(data.body)
             if not data or data == "" then
                 return nil
             end
@@ -163,7 +159,6 @@ If you're requested to return a JSON object:
             -- that it cannot perform this action.
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             json = json:gsub("`%s*`%s*`", "```")
-            vim.print(json)
             data.body = json
             return openai.handlers.inline_output(self, data, context)
         end,
