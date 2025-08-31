@@ -28,7 +28,6 @@ return {
     },
     handlers = {
         tokens = function(self, data)
-            vim.print(data)
             if not data or data == "" then
                 return nil
             end
@@ -67,15 +66,16 @@ return {
         form_messages = function(self, messages)
             messages = vim
                 .iter(messages)
+                :filter(function(message)
+                    return message.content and message.content ~= ""
+                end)
                 :map(function(message)
-                    vim.print(message)
                     local gitlab_message = {
                         category = "file",
                         id = message.role,
-                        content = message.content or "<empty>",
+                        content = message.content,
                     }
 
-                    -- Preserve tool-related fields for OpenAI handlers
                     if message.tool_calls then
                         gitlab_message.tool_calls = message.tool_calls
                     end
