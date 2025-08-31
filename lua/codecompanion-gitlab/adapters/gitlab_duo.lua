@@ -56,7 +56,8 @@ return {
                 }
             end
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
-            json = json:gsub("`%s*`%s*`", "```")
+            json = json:gsub("`%s*`", "``")
+            json = json:gsub("\"`", "\"")
             data.body = json
             return openai.handlers.tokens(self, data)
         end,
