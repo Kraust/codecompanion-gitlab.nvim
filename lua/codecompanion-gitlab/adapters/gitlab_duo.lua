@@ -68,10 +68,11 @@ return {
             messages = vim
                 .iter(messages)
                 :map(function(message)
+                    vim.print(message)
                     local gitlab_message = {
                         category = "file",
                         id = message.role,
-                        content = message.content,
+                        content = message.content or "<empty>",
                     }
 
                     -- Preserve tool-related fields for OpenAI handlers
