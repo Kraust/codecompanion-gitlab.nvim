@@ -28,6 +28,7 @@ return {
     },
     handlers = {
         tokens = function(self, data)
+            vim.print(data)
             if not data or data == "" then
                 return nil
             end
