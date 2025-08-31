@@ -1,4 +1,4 @@
-local openai = require("codecompanion.adapters.openai")
+local openai = require("codecompanion.adapters.http.openai")
 
 ---@class GitlabDuo.Adapter: CodeCompanion.Adapter
 return {
@@ -46,8 +46,19 @@ return {
             end
             -- JSON needs to have its backticks fixed. The Model reports
             -- that it cannot perform this action.
+            if json == nil then
+                vim.print(data)
+            end
+            if json == "I'm sorry, but answering this question requires a different Duo subscription. Please contact your administrator." then
+                return {
+                    status = "error",
+                    output = json,
+                }
+            end
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
+            json = json:gsub("`%s*`%s*`%s*`", "```")
             json = json:gsub("`%s*`%s*`", "```")
+            json = json:gsub("\"`", "\"")
             data.body = json
             return openai.handlers.tokens(self, data)
         end,
@@ -57,12 +68,24 @@ return {
         form_messages = function(self, messages)
             messages = vim
                 .iter(messages)
+                :filter(function(message)
+                    return message.content and message.content ~= ""
+                end)
                 :map(function(message)
-                    return {
+                    local gitlab_message = {
                         category = "file",
                         id = message.role,
                         content = message.content,
                     }
+
+                    if message.tool_calls then
+                        gitlab_message.tool_calls = message.tool_calls
+                    end
+                    if message.tool_call_id then
+                        gitlab_message.tool_call_id = message.tool_call_id
+                    end
+
+                    return gitlab_message
                 end)
                 :totable()
 
