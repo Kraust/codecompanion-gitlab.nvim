@@ -61,11 +61,21 @@ return {
             messages = vim
                 .iter(messages)
                 :map(function(message)
-                    return {
+                    local gitlab_message = {
                         category = "file",
                         id = message.role,
                         content = message.content,
                     }
+
+                    -- Preserve tool-related fields for OpenAI handlers
+                    if message.tool_calls then
+                        gitlab_message.tool_calls = message.tool_calls
+                    end
+                    if message.tool_call_id then
+                        gitlab_message.tool_call_id = message.tool_call_id
+                    end
+
+                    return gitlab_message
                 end)
                 :totable()
 
