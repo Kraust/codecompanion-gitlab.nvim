@@ -50,6 +50,12 @@ return {
             if json == nil then
                 vim.print(data)
             end
+            if json == "I'm sorry, but answering this question requires a different Duo subscription. Please contact your administrator." then
+                return {
+                    status = "error",
+                    output = json,
+                }
+            end
             json = json:match("%*%*%* Begin Response%s*\n(.-)\n%s*%*%*%* End Response")
             json = json:gsub("`%s*`%s*`", "```")
             data.body = json
